@@ -1,24 +1,23 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { AuthContext } from "../../context/AuthContext";
 import "./NavLinks.css";
 
 const AdminNavLinks = () => {
+    const { t } = useTranslation();
     const auth = useContext(AuthContext);
 
     return (
         <ul className="nav-links">
             <li>
-                <NavLink to="/admin/login" end></NavLink>
+                <NavLink to="/admin" end>{t("nav.accueil")}</NavLink>
             </li>
+            {/* liens vers les autres pages admin */}
             <li>
-                <NavLink to="/admin/utilisateurs"></NavLink>
-            </li>
-            <li>
-                <NavLink to="/admin/compte"></NavLink>
-            </li>
-            <li className="logout-link">
-                <NavLink to="/" onClick={auth.logout}></NavLink>
+                <button type="button" className="logout-link" onClick={auth.logout}>
+                    {t("nav.deconnexion")}
+                </button>
             </li>
         </ul>
     );

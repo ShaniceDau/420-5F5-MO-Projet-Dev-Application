@@ -1,0 +1,31 @@
+.lang_switcher {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.lang_btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: color 0.2s;
+}
+
+.lang_btn:hover {
+    color: var(--text-primary);
+}
+
+.lang_btn_active {
+    color: var(--accent-pink);
+}
+
+.lang_divider {
+    color: var(--border-subtle);
+    font-size: 11px;
+}
