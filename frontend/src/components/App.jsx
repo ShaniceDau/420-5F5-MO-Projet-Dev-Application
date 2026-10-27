@@ -44,36 +44,15 @@ const App = () => {
         localStorage.removeItem("roleUtilisateur");
     };
 
-    //Router public non connectes
-    const routerLoggedIn = createBrowserRouter([
-        {
-            path: "/",
-            element: <RootLayout />,
-            errorElement: <ErrorPage />,
-            children: [
-                { index: true, element: <Navigate to="/login" replace /> },
-                { path: "login", element: <Auth /> },
-                { path: "register", element: <Subscribe /> },
-            ],
-        },
-        //connexion admin : aucun lien n'y mene, l'admin doit ecrire l'URL
-        { path: "/admin/login", element: <AdminAuth /> },
-        //toute autre route /admin renvoie vers la connexion admin
-        { path: "/admin/*", element: <Navigate to="/admin/login" replace /> },
-        //toute route inconnue renvoie vers la connexion
-        { path: "*", element: <Navigate to="/login" replace /> },
-    ]);
-
     //Router protege - utilisateurs connectes (utilisateurs et admin)
-    const routerNotLoggedIn = createBrowserRouter([
-        //pages des utilisateurs
-        {
+    const routerLoggedIn = createBrowserRouter([
+         {
             path: "/",
             element: <RootLayout />,
             errorElement: <ErrorPage />,
             children: [
                 { index: true, element: <Accueil /> },
-                //ajouter ici les autres pages des utilisateurs
+                
             ],
         },
         //pages de l'admin 
@@ -83,15 +62,28 @@ const App = () => {
             errorElement: <ErrorPage />,
             children: [
                 { index: true, element: <AccueilAdmin /> },
-                //ajouter ici les autres pages de l'admin
             ],
         },
-        //toute route inconnue 
+        //toute route inconnue renvoie vers l'accueil selon le role
         {
             path: "*",
             element: <Navigate to={roleUtilisateur === "admin" ? "/admin" : "/"} replace />,
         },
     ]);
+
+    //Router public non connectes
+    const routerNotLoggedIn = createBrowserRouter([
+        { path: "/", element: <Navigate to="/login" replace /> },
+        { path: "/login", element: <Auth /> },
+        { path: "/register", element: <Subscribe /> },
+        //connexion admin : l'admin doit ecrire l'URL
+        { path: "/admin/login", element: <AdminAuth /> },
+        //toute autre route /admin renvoie vers la connexion admin
+        { path: "/admin/*", element: <Navigate to="/admin/login" replace /> },
+        //toute route inconnue renvoie vers la connexion
+        { path: "*", element: <Navigate to="/login" replace /> },
+    ]);
+
 
     const authContextValue = {
         loggedIn: isLoggedIn,
@@ -108,7 +100,7 @@ const App = () => {
             {}
             <RouterProvider
                 key={isLoggedIn ? "protege" : "public"}
-                router={isLoggedIn ? routerNotLoggedIn : routerLoggedIn}
+                router={isLoggedIn ? routerLoggedIn : routerNotLoggedIn}
             />
         </AuthContext.Provider>
     );

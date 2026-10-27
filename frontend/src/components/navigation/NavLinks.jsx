@@ -1,10 +1,18 @@
+import { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 import "./NavLinks.css";
 
 const NavLinks = () => {
+    const auth = useContext(AuthContext);
+    
     return (
         <ul className="nav-links">
             <li>
-                <span className="nav-label"></span>
+                <NavLink to="/" end>Accueil</NavLink>
+            </li>
+            <li>
+                <NavLink to="/login" onClick={auth.logout}>Déconnexion</NavLink>
             </li>
         </ul>
     );
