@@ -11,7 +11,7 @@ const AdminNavLinks = () => {
             <li>
                 <NavLink to="/admin" end>Accueil</NavLink>
             </li>
-            {/* ajouter ici les liens vers les autres pages admin */}
+        
             <li>
                 <NavLink to="/admin/login" onClick={auth.logout}>Déconnexion</NavLink>
             </li>

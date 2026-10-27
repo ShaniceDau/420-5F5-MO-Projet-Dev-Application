@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import NewNote from "../containers/NewNote";
 import RootLayout from "../containers/Roots";
 import ErrorPage from "../containers/ErrorPage";
 import Auth from "../containers/Auth";
 import AdminAuth from "../containers/AdminAuth";
 import Subscribe from "../containers/Subscribre";
-import Accueil from "../containers/Accueil";
+import Cards from "../containers/Accueil";
 import AccueilAdmin from "../containers/AccueilAdmin";
 import AdminNavigation from "./navigation/AdminNavigation";
 
@@ -51,7 +52,10 @@ const App = () => {
             element: <RootLayout />,
             errorElement: <ErrorPage />,
             children: [
-                { index: true, element: <Accueil /> },
+                { index: true, element: <Navigate to="/noteCards" replace /> },
+                { path: "noteCards", element: <Cards /> },
+                { path: "newNote", element: <NewNote /> },
+
                 
             ],
         },
