@@ -97,7 +97,7 @@ export default function NoteDetails() {
         return (
             <div className="note_editeur">
                 <div className="note_editeur_barre">
-                    <Link to="/partagees" className="note_editeur_retour">← Partagées</Link>
+                    <Link to="/partagees" className="note_editeur_retour"> Partagées</Link>
                     <span className="note_editeur_statut">
                         Partagée par {proprietaire ? proprietaire.email : "un autre utilisateur"} · lecture seulement
                     </span>
@@ -111,7 +111,7 @@ export default function NoteDetails() {
     return (
         <div className="note_editeur">
             <div className="note_editeur_barre">
-                <Link to="/mes-notes" className="note_editeur_retour">← Mes notes</Link>
+                <Link to="/mes-notes" className="note_editeur_retour"> Mes notes</Link>
                 <span className="note_editeur_statut">Enregistré automatiquement</span>
                 <button type="button" className="note_editeur_supprimer" onClick={supprimer}>
                     Supprimer

@@ -1,0 +1,22 @@
+.side-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 75%;
+    max-width: 280px;
+    height: 100vh;
+    padding: 28px 16px;
+    background-color: var(--mauve-100);
+    box-shadow: 4px 0 24px rgba(45, 38, 64, 0.2);
+    animation: glisser 0.2s ease-out;
+}
+
+@keyframes glisser {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}

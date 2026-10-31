@@ -1,0 +1,45 @@
+/* liens du menu de gauche */
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    display: block;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border: 1px solid transparent;
+    border-radius: var(--rayon);
+    color: var(--texte);
+    text-decoration: none;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.nav-links a:hover {
+    background-color: var(--mauve-200);
+}
+
+.nav-links a.active {
+    background-color: var(--blanc);
+    border-color: var(--mauve-300);
+    color: var(--mauve-800);
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(94, 67, 150, 0.08);
+}
+
+/* deconnexion */
+.nav-links_deconnexion {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--bordure);
+}
+
+.nav-links_deconnexion a {
+    color: var(--texte-doux);
+}
+
+.nav-links_deconnexion a:hover {
+    background-color: var(--erreur-fond);
+    color: var(--erreur);
+}

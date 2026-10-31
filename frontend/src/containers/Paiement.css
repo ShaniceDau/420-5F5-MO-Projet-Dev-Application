@@ -1,0 +1,148 @@
+.paiement {
+    max-width: 800px;
+}
+
+.paiement_retour {
+    color: var(--mauve-700);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.paiement_retour:hover {
+    text-decoration: underline;
+}
+
+.paiement h2 {
+    margin: 12px 0 22px;
+    font-size: 1.4rem;
+}
+
+.paiement_contenu {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* recapitulatif de la commande */
+.paiement_recap {
+    padding: 22px;
+    background-color: var(--mauve-50);
+    border: 1px solid var(--mauve-200);
+    border-radius: var(--rayon);
+}
+
+.paiement_recap h3 {
+    margin: 0 0 14px;
+    font-size: 1rem;
+}
+
+.paiement_ligne {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    font-size: 0.9rem;
+}
+
+/* le prix reste sur une seule ligne */
+.paiement_ligne span:last-child {
+    white-space: nowrap;
+}
+
+.paiement_total {
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px solid var(--mauve-300);
+    font-weight: 700;
+    color: var(--mauve-800);
+}
+
+.paiement_note {
+    margin: 12px 0 0;
+    color: var(--texte-doux);
+    font-size: 0.8rem;
+}
+
+/* formulaire de carte */
+.paiement_form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+}
+
+.paiement_rangee {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.paiement_control {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.paiement_control label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.paiement_control input {
+    padding: 10px 12px;
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+}
+
+.paiement_control input:focus {
+    outline: none;
+    border-color: var(--mauve-500);
+    box-shadow: 0 0 0 3px var(--mauve-100);
+}
+
+.paiement_bouton {
+    display: inline-block;
+    padding: 12px;
+    background-color: var(--mauve-700);
+    color: var(--blanc);
+    border: none;
+    border-radius: var(--rayon);
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.paiement_bouton:hover {
+    background-color: var(--mauve-800);
+}
+
+.paiement_confirmation {
+    max-width: 480px;
+    padding: 32px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-top: 4px solid var(--menthe);
+    border-radius: var(--rayon);
+}
+
+.paiement_confirmation h2 {
+    margin-top: 0;
+    color: var(--succes);
+}
+
+.paiement_confirmation p {
+    margin: 0 0 22px;
+    line-height: 1.6;
+}
+
+/* sur cellulaire */
+@media (max-width: 768px) {
+    .paiement_contenu {
+        grid-template-columns: 1fr;
+    }
+}

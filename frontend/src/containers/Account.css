@@ -1,0 +1,148 @@
+.compte {
+    max-width: 680px;
+}
+
+.compte h2 {
+    margin: 0 0 22px;
+    font-size: 1.4rem;
+}
+
+.compte_section {
+    margin-bottom: 20px;
+    padding: 22px 24px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+}
+
+.compte_section h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+    font-size: 1rem;
+}
+
+.compte_section h3::before {
+    content: "";
+    width: 4px;
+    height: 16px;
+    border-radius: 2px;
+    background-color: var(--mauve-400);
+}
+
+.compte_form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.compte_rangee {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.compte_control {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.compte_control label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.compte_control input {
+    padding: 10px 12px;
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+}
+
+.compte_control input:focus {
+    outline: none;
+    border-color: var(--mauve-500);
+    box-shadow: 0 0 0 3px var(--mauve-100);
+}
+
+.compte_aide {
+    margin: 0;
+    color: var(--texte-doux);
+    font-size: 0.8rem;
+}
+
+.compte_bouton {
+    align-self: flex-start;
+    padding: 10px 22px;
+    background-color: var(--mauve-700);
+    color: var(--blanc);
+    border: 1px solid var(--mauve-700);
+    border-radius: var(--rayon);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.compte_bouton:hover {
+    background-color: var(--mauve-800);
+}
+
+.compte_bouton_contour {
+    background-color: var(--blanc);
+    border-color: var(--bordure);
+    color: var(--texte);
+}
+
+.compte_bouton_contour:hover {
+    background-color: var(--mauve-50);
+}
+
+/* messages */
+.compte_succes,
+.compte_erreur {
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: var(--rayon);
+    font-size: 0.85rem;
+}
+
+.compte_succes {
+    background-color: var(--succes-fond);
+    color: var(--succes);
+}
+
+.compte_erreur {
+    background-color: var(--erreur-fond);
+    color: var(--erreur);
+}
+
+.compte_abonnement {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.compte_forfait {
+    display: inline-block;
+    margin: 0 0 6px;
+    padding: 2px 10px;
+    background-color: var(--mauve-100);
+    border-radius: 3px;
+    color: var(--mauve-800);
+    font-weight: 700;
+}
+
+/* sur cellulaire*/
+@media (max-width: 768px) {
+    .compte_rangee {
+        grid-template-columns: 1fr;
+    }
+
+    .compte_abonnement {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

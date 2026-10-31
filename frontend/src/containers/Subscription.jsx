@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import "./Subscription.css";
 
 export default function Abonnement() {
     const [forfait, setForfait] = useState("gratuit");

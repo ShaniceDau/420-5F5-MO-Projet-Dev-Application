@@ -1,0 +1,118 @@
+
+.auth_container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    background: linear-gradient(160deg, var(--mauve-100) 0%, var(--fond) 55%, #fdf1ea 100%);
+}
+
+/* formulaire */
+.form {
+    width: 100%;
+    max-width: 420px;
+    padding: 36px 32px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-top: 4px solid var(--mauve-500);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+}
+
+.title {
+    margin: 0 0 24px;
+    font-size: 1.5rem;
+}
+
+.control {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    margin-bottom: 16px;
+}
+
+.control label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.control input {
+    width: 100%;
+    padding: 10px 12px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.control input:focus {
+    outline: none;
+    border-color: var(--mauve-500);
+    box-shadow: 0 0 0 3px var(--mauve-100);
+}
+
+/* champ en erreur */
+.control input.input_invalid {
+    border-color: var(--erreur);
+    background-color: var(--erreur-fond);
+}
+
+.erreur_msg {
+    color: var(--erreur);
+    font-size: 0.8rem;
+}
+
+.erreur_msg p {
+    margin: 0 0 12px;
+}
+
+/* boutons Reinitialiser / Se connecter */
+.btn_actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin: 24px 0 0;
+}
+
+.button {
+    padding: 10px 20px;
+    border: 1px solid transparent;
+    border-radius: var(--rayon);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.button_submit {
+    background-color: var(--mauve-700);
+    color: var(--blanc);
+}
+
+.button_submit:hover {
+    background-color: var(--mauve-800);
+}
+
+.button_outline {
+    background-color: var(--blanc);
+    border-color: var(--bordure);
+    color: var(--texte);
+}
+
+.button_outline:hover {
+    background-color: var(--mauve-50);
+}
+
+.lien_inscription {
+    margin: 24px 0 0;
+    padding-top: 18px;
+    border-top: 1px solid var(--bordure);
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--texte-doux);
+}
+
+.lien_inscription a {
+    font-weight: 600;
+}

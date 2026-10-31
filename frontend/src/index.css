@@ -1,0 +1,72 @@
+:root {
+
+    --mauve-50: #f8f5fd;
+    --mauve-100: #f0eafa;
+    --mauve-200: #e2d6f5;
+    --mauve-300: #c9b5ec;
+    --mauve-400: #a98bdc;
+    --mauve-500: #8a68c9;
+    --mauve-700: #5e4396;
+    --mauve-800: #4a3378;
+    --menthe: #9ed9c3;
+    --peche: #f6c3a6;
+    --bleu-poudre: #a9c4ec;
+    --rose-pale: #f2b8cf;
+    --texte: #2d2640;
+    --texte-doux: #6e6683;
+    --fond: #faf8fd;
+    --blanc: #ffffff;
+    --bordure: #e3dcef;
+
+    /* messages */
+    --succes: #2f7d5b;
+    --succes-fond: #e6f5ee;
+    --erreur: #b3264f;
+    --erreur-fond: #fdeef3;
+    --rayon: 4px;
+    --ombre: 0 6px 20px rgba(94, 67, 150, 0.08);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--texte);
+    background-color: var(--fond);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+    line-height: 1.25;
+    color: var(--texte);
+}
+
+a {
+    color: var(--mauve-700);
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+    color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--mauve-400);
+    outline-offset: 2px;
+}
+
+::selection {
+    background-color: var(--mauve-200);
+}

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import "./NoteCard.css";
 
 //un clic ouvre la note en grand
 export default function NoteCard({ id, titre, contenu, etiquette }) {

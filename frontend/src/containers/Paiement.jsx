@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import "./Paiement.css"
 
 export default function Paiement() {
     const [numeroCarte, setNumeroCarte] = useState("");

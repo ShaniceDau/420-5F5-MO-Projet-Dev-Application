@@ -1,0 +1,22 @@
+/* mise en page des pages connectees : menu a gauche + contenu a droite */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.layout_contenu {
+    flex: 1;
+    min-width: 0;
+    padding: 32px 40px;
+}
+
+/* sur cellulaire, la barre de navigation passe au-dessus du contenu */
+@media (max-width: 768px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .layout_contenu {
+        padding: 20px 16px;
+    }
+}

@@ -1,0 +1,60 @@
+/* une carte de note */
+.note_card {
+    --accent: var(--mauve-400);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    min-height: 140px;
+    padding: 16px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-top: 4px solid var(--accent);
+    border-radius: var(--rayon);
+    color: var(--texte);
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+li:nth-child(4n + 2) > .note_card {
+    --accent: var(--menthe);
+}
+
+li:nth-child(4n + 3) > .note_card {
+    --accent: var(--peche);
+}
+
+li:nth-child(4n + 4) > .note_card {
+    --accent: var(--bleu-poudre);
+}
+
+.note_card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ombre);
+}
+
+.note_card_titre {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.note_card_contenu {
+    margin: 0;
+    color: var(--texte-doux);
+    font-size: 0.875rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.note_card_etiquette {
+    align-self: flex-start;
+    margin-top: auto;
+    padding: 2px 10px;
+    background-color: var(--mauve-50);
+    border: 1px solid var(--mauve-200);
+    border-radius: 3px;
+    color: var(--mauve-700);
+    font-size: 0.75rem;
+}

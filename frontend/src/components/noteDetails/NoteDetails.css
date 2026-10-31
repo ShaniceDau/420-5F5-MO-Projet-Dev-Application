@@ -1,0 +1,192 @@
+.note_editeur {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: calc(100vh - 64px);
+    padding: 24px 32px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+}
+
+.note_editeur > h2 {
+    margin: 0;
+}
+
+.note_editeur_barre {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--bordure);
+}
+
+.note_editeur_retour {
+    color: var(--mauve-700);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.note_editeur_retour:hover {
+    text-decoration: underline;
+}
+
+.note_editeur_statut {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--texte-doux);
+    font-size: 0.8rem;
+}
+
+.note_editeur_statut::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--menthe);
+}
+
+.note_editeur_supprimer {
+    padding: 7px 16px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+    color: var(--texte-doux);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.note_editeur_supprimer:hover {
+    background-color: var(--erreur-fond);
+    border-color: var(--erreur);
+    color: var(--erreur);
+}
+
+.note_editeur_titre {
+    margin: 0;
+    padding: 6px 0;
+    border: none;
+    background: transparent;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--texte);
+    outline: none;
+}
+
+.note_editeur_titre::placeholder,
+.note_editeur_contenu::placeholder {
+    color: var(--mauve-300);
+}
+
+.note_editeur_contenu {
+    flex: 1;
+    min-height: 300px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    line-height: 1.7;
+    resize: none;
+    outline: none;
+}
+
+
+.note_editeur_lecture {
+    margin: 0;
+    line-height: 1.7;
+    white-space: pre-wrap;
+}
+
+/* section Partager */
+.note_partage {
+    padding: 18px 20px;
+    background-color: var(--mauve-50);
+    border: 1px solid var(--mauve-200);
+    border-radius: var(--rayon);
+}
+
+.note_partage h3 {
+    margin: 0 0 12px;
+    font-size: 0.95rem;
+    color: var(--mauve-800);
+}
+
+.note_partage_form {
+    display: flex;
+    gap: 10px;
+    max-width: 520px;
+}
+
+.note_partage_form input {
+    flex: 1;
+    padding: 9px 12px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+}
+
+.note_partage_form input:focus {
+    outline: none;
+    border-color: var(--mauve-500);
+}
+
+.note_partage_form button {
+    padding: 9px 18px;
+    background-color: var(--mauve-700);
+    color: var(--blanc);
+    border: none;
+    border-radius: var(--rayon);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.note_partage_form button:hover {
+    background-color: var(--mauve-800);
+}
+
+.note_partage_erreur {
+    margin: 8px 0 0;
+    color: var(--erreur);
+    font-size: 0.85rem;
+}
+
+.note_partage_liste {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    max-width: 520px;
+}
+
+.note_partage_liste li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--mauve-200);
+    font-size: 0.9rem;
+}
+
+.note_partage_liste button {
+    background: none;
+    border: none;
+    color: var(--texte-doux);
+    font-size: 0.85rem;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.note_partage_liste button:hover {
+    color: var(--erreur);
+}
+
+@media (max-width: 768px) {
+    .note_editeur {
+        padding: 18px 16px;
+    }
+
+    .note_partage_form {
+        flex-direction: column;
+    }
+}

@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import "./Account.css";
 
 export default function Compte() {
     const auth = useContext(AuthContext);

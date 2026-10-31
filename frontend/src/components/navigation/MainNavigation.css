@@ -1,0 +1,91 @@
+.main-header,
+.sidebar {
+    position: sticky;
+    top: 0;
+    width: 230px;
+    height: 100vh;
+    flex-shrink: 0;
+    padding: 28px 16px;
+    background-color: var(--mauve-100);
+    border-right: 1px solid var(--bordure);
+    overflow-y: auto;
+}
+
+
+.main-navigation__title::before,
+.sidebar_logo::before {
+    content: "";
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, var(--mauve-400), var(--rose-pale));
+}
+
+.main-navigation__title::before,
+.sidebar_logo::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, var(--mauve-400), var(--rose-pale));
+}
+
+/* le bouton hamburger*/
+.main-navigation_MenuButton {
+    display: none;
+}
+
+/*Cellulaire : barre en haut + bouton hamburger */
+@media (max-width: 768px) {
+    .main-header {
+        z-index: 5;
+        width: 100%;
+        height: auto;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 16px;
+        border-right: none;
+        border-bottom: 1px solid var(--bordure);
+    }
+
+    .main-navigation__title {
+        margin: 0;
+        font-size: 1.15rem;
+    }
+
+    /* le menu du header est cache, on passe par le SideDrawer */
+    .main-navigation__header-nav {
+        display: none;
+    }
+
+    .main-navigation_MenuButton {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 26px;
+        height: 18px;
+        padding: 0;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+
+    .main-navigation_MenuButton span {
+        display: block;
+        width: 100%;
+        height: 2px;
+        border-radius: 2px;
+        background-color: var(--mauve-800);
+    }
+
+    /* menu admin sur cellulaire  */
+    .sidebar {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--bordure);
+    }
+}

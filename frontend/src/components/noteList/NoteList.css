@@ -1,0 +1,70 @@
+.mes_notes_barre {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.mes_notes_recherche {
+    flex: 1;
+    padding: 11px 14px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.mes_notes_recherche:focus {
+    outline: none;
+    border-color: var(--mauve-500);
+    box-shadow: 0 0 0 3px var(--mauve-100);
+}
+
+.mes_notes_nouvelle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 26px;
+    background-color: var(--mauve-700);
+    color: var(--blanc);
+    border: none;
+    border-radius: var(--rayon);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.mes_notes_nouvelle:hover {
+    background-color: var(--mauve-800);
+}
+
+.mes_notes_titre {
+    margin: 0 0 18px;
+    font-size: 1.4rem;
+}
+
+/* grille de cartes */
+.note_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 18px;
+}
+
+.note_list_vide {
+    margin: 0;
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--texte-doux);
+    background-color: var(--blanc);
+    border: 1px dashed var(--mauve-300);
+    border-radius: var(--rayon);
+}
+
+@media (max-width: 768px) {
+    .mes_notes_barre {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
