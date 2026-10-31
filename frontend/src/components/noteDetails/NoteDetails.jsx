@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import "./NoteDetails.css";
@@ -10,82 +10,73 @@ export default function NoteDetails() {
     const navigate = useNavigate();
 
     const notes = JSON.parse(localStorage.getItem("notes")) || [];
-    const modeModification = noteId !== undefined;
 
     //chercher la note seulement si elle appartient a l'utilisateur connecte
     const note = notes.find((n) => n.id === noteId && n.userId === auth.userId);
 
-    if (modeModification && !note) {
+    const [titre, setTitre] = useState(note ? note.titre : "");
+    const [contenu, setContenu] = useState(note ? note.contenu : "");
+
+    if (!note) {
         return (
-            <div className="note_details">
+            <div className="note_editeur">
                 <h2>Note introuvable</h2>
                 <Link to="/mes-notes">Retour à mes notes</Link>
             </div>
         );
     }
 
-    const sauvegarder = (event) => {
-        event.preventDefault();
-        const fd = new FormData(event.target);
-        const data = Object.fromEntries(fd.entries());
+    //enregistrer la note dans le localStorage
+    const enregistrer = (nouveauTitre, nouveauContenu) => {
+        const toutes = JSON.parse(localStorage.getItem("notes")) || [];
+        const misesAJour = toutes.map((n) =>
+            n.id === noteId ? { ...n, titre: nouveauTitre, contenu: nouveauContenu } : n
+        );
+        localStorage.setItem("notes", JSON.stringify(misesAJour));
+    };
 
-        let nouvellesNotes;
-        if (modeModification) {
-            //remplacer la note modifiee
-            nouvellesNotes = notes.map((n) =>
-                n.id === noteId ? { ...n, titre: data.titre, contenu: data.contenu } : n
-            );
-        } else {
-            //ajouter une nouvelle note
-            const nouvelleNote = {
-                id: "n" + Date.now(),
-                userId: auth.userId,
-                titre: data.titre,
-                contenu: data.contenu,
-            };
-            nouvellesNotes = [...notes, nouvelleNote];
-        }
+    const changerTitre = (event) => {
+        setTitre(event.target.value);
+        enregistrer(event.target.value, contenu);
+    };
 
-        localStorage.setItem("notes", JSON.stringify(nouvellesNotes));
-        navigate("/mes-notes");
+    const changerContenu = (event) => {
+        setContenu(event.target.value);
+        enregistrer(titre, event.target.value);
     };
 
     const supprimer = () => {
         if (!window.confirm("Supprimer cette note ?")) return;
-        const nouvellesNotes = notes.filter((n) => n.id !== noteId);
-        localStorage.setItem("notes", JSON.stringify(nouvellesNotes));
+        const toutes = JSON.parse(localStorage.getItem("notes")) || [];
+        localStorage.setItem("notes", JSON.stringify(toutes.filter((n) => n.id !== noteId)));
         navigate("/mes-notes");
     };
 
     return (
-        <div className="note_details">
-            <h2>{modeModification ? "Modifier la note" : "Nouvelle note"}</h2>
+        <div className="note_editeur">
+            <div className="note_editeur_barre">
+                <Link to="/mes-notes" className="note_editeur_retour">Mes notes</Link>
+                <span className="note_editeur_statut">Enregistré automatiquement</span>
+                <button type="button" className="note_editeur_supprimer" onClick={supprimer}>
+                    Supprimer
+                </button>
+            </div>
 
-            <form className="note_form" onSubmit={sauvegarder} key={noteId || "nouvelle"}>
-                <div className="note_form_control">
-                    <label htmlFor="titre">Titre</label>
-                    <input id="titre" name="titre" type="text" defaultValue={note?.titre} required />
-                </div>
+            <input
+                className="note_editeur_titre"
+                type="text"
+                placeholder="Titre de la note"
+                value={titre}
+                onChange={changerTitre}
+                autoFocus={titre === ""}
+            />
 
-                <div className="note_form_control">
-                    <label htmlFor="contenu">Contenu</label>
-                    <textarea id="contenu" name="contenu" rows="10" defaultValue={note?.contenu} />
-                </div>
-
-                <div className="note_form_actions">
-                    <Link to="/noteCards" className="note_form_bouton note_form_bouton_contour">
-                        Annuler
-                    </Link>
-                    {modeModification && (
-                        <button type="button" className="note_form_bouton note_form_bouton_contour" onClick={supprimer}>
-                            Supprimer
-                        </button>
-                    )}
-                    <button type="submit" className="note_form_bouton note_form_bouton_plein">
-                        Enregistrer
-                    </button>
-                </div>
-            </form>
+            <textarea
+                className="note_editeur_contenu"
+                placeholder="Commencez à écrire..."
+                value={contenu}
+                onChange={changerContenu}
+            />
         </div>
     );
 }
