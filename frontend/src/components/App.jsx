@@ -13,6 +13,7 @@ import NoteDetails from "./noteDetails/NoteDetails";
 import Share from "../containers/Share";
 import Subscription from "../containers/Subscription";
 import Paiement from "../containers/Paiement";
+import Account from "../containers/Account";
 
 const App = () => {
     //recuperer les donnees de l'utilisateur stockees au chargement de la page
@@ -61,8 +62,7 @@ const App = () => {
                 { path: "partager", element: <Share /> },
                 { path: "abonnement", element: <Subscription /> },
                 { path: "paiement", element: <Paiement /> },
-
-                
+                { path: "compte", element: <Account /> },
             ],
         },
         //pages de l'admin 
