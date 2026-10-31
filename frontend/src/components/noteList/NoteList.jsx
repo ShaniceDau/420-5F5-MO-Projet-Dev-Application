@@ -3,7 +3,13 @@ import NoteCard from "../noteCard/NoteCard";
 import "./NoteList.css";
 
 //section Mes notes
-export default function NoteList({ items, onAjouter }) {
+export default function NoteList({ 
+    items,
+    onAjouter,
+    titre = "Mes notes",
+    avecBarre = true,
+    messageVide = "Aucune note pour l'instant.",
+}) {
     const [recherche, setRecherche] = useState("");
 
     //filtrer selon le titre ou contenu
@@ -13,33 +19,37 @@ export default function NoteList({ items, onAjouter }) {
 
     return (
         <div className="mes_notes">
-            <div className="mes_notes_barre">
-                <input
-                    type="search"
-                    className="mes_notes_recherche"
-                    placeholder="Rechercher une note..."
-                    value={recherche}
-                    onChange={(event) => setRecherche(event.target.value)}
-                />
-                <button type="button" className="mes_notes_nouvelle" onClick={onAjouter}>
-                    + Nouvelle note
-                </button>
-            </div>
+            {avecBarre && ( 
+                <div className="mes_notes_barre">
+                    <input
+                        type="search"
+                        className="mes_notes_recherche"
+                        placeholder="Rechercher une note..."
+                        value={recherche}
+                        onChange={(event) => setRecherche(event.target.value)}
+                    />
+                    {onAjouter && ( 
+                        <button type="button" className="mes_notes_nouvelle" onClick={onAjouter}>
+                            + Nouvelle note
+                        </button>
+                    )}
+                </div>
+            )}
 
-            <h2 className="mes_notes_titre">Mes notes</h2>
+            <h2 className="mes_notes_titre">{titre}</h2>
 
             {notesAffichees.length === 0 ? (
-                <p className="note_list_vide">Aucune note pour l'instant.</p>
+                <p className="note_list_vide">{messageVide}</p>
             ) : (
                 <ul className="note_list">
                     {notesAffichees.map((note) => (
                         <NoteCard
-                            key={note.id}
-                            id={note.id}
-                            titre={note.titre}
-                            contenu={note.contenu}
-                            etiquette={note.etiquette}
-                        />
+                        key={note.id}
+                        id={note.id}
+                        titre={note.titre}
+                        contenu={note.contenu}
+                        etiquette={note.etiquette}
+                    />
                     ))}
                 </ul>
             )}

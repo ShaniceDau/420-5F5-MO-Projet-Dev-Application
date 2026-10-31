@@ -10,7 +10,7 @@ const NavLinks = () => {
     return (
         <ul className="nav-links">
             <li><NavLink to="/mes-notes">Mes notes</NavLink></li>
-            <li><NavLink to="/partagees">Partagées</NavLink></li>
+            <li><NavLink to="/partager">Partage</NavLink></li>
             <li><NavLink to="/abonnement">Abonnement</NavLink></li>
             <li><NavLink to="/compte">Mon compte</NavLink></li>
             <li className="nav-links_deconnexion">

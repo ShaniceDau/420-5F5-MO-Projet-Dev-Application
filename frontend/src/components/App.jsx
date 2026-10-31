@@ -10,6 +10,7 @@ import Cards from "../containers/Cards";
 import AccueilAdmin from "../containers/AccueilAdmin";
 import AdminNavigation from "./navigation/AdminNavigation";
 import NoteDetails from "./noteDetails/NoteDetails";
+import Share from "../containers/Share";
 
 const App = () => {
     //recuperer les donnees de l'utilisateur stockees au chargement de la page
@@ -55,6 +56,7 @@ const App = () => {
                 { index: true, element: <Navigate to="/mes-notes" replace /> },
                 { path: "mes-notes", element: <Cards /> },
                 { path: "notes/:noteId", element: <NoteDetails /> },
+                { path: "partager", element: <Share /> },
 
                 
             ],
