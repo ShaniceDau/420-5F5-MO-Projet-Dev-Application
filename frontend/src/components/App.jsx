@@ -11,6 +11,8 @@ import AccueilAdmin from "../containers/AccueilAdmin";
 import AdminNavigation from "./navigation/AdminNavigation";
 import NoteDetails from "./noteDetails/NoteDetails";
 import Share from "../containers/Share";
+import Subscription from "../containers/Subscription";
+import Paiement from "../containers/Paiement";
 
 const App = () => {
     //recuperer les donnees de l'utilisateur stockees au chargement de la page
@@ -57,6 +59,8 @@ const App = () => {
                 { path: "mes-notes", element: <Cards /> },
                 { path: "notes/:noteId", element: <NoteDetails /> },
                 { path: "partager", element: <Share /> },
+                { path: "abonnement", element: <Subscription /> },
+                { path: "paiement", element: <Paiement /> },
 
                 
             ],
