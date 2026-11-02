@@ -7,7 +7,6 @@ import adminRoutes from './routes/admin-routes.js';
 import abonnementRoutes from './routes/abonnement-routes.js';
 import errorHandler from './handler/error-handler.js';
 import { connectMongo } from './util/bd.js';
-import Admin from './models/admin.js';
 
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/tpsynthesedb';
@@ -34,22 +33,6 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 await connectMongo(MONGODB_URI);
-
-const seedAdmin = async () => {
-    const existingAdmin = await Admin.findOne({ email: 'admin@nota.com' });
-
-    if (!existingAdmin) {
-        await Admin.create({
-            name: 'Admin',
-            email: 'admin@nota.com',
-            password: 'admin123',
-            permissions: ['read', 'write', 'delete']
-        });
-        console.log('Admin seeded: admin@nota.com / admin123');
-    }
-};
-
-await seedAdmin();
 
 app.listen(PORT, () => {
     console.log(`Serveur écoute sur le port ${PORT}`);
