@@ -7,13 +7,14 @@ import Auth from "../containers/Auth";
 import AdminAuth from "../containers/AdminAuth";
 import Subscribe from "../containers/Subscribre";
 import Cards from "../containers/Cards";
-import AccueilAdmin from "../containers/AccueilAdmin";
 import AdminNavigation from "./navigation/AdminNavigation";
 import NoteDetails from "./noteDetails/NoteDetails";
 import Share from "../containers/Share";
 import Subscription from "../containers/Subscription";
 import Paiement from "../containers/Paiement";
 import Account from "../containers/Account";
+import AdminUsers from "../containers/AdminUsers";
+import AdminAccount from "../containers/AdminAccount";
 
 const App = () => {
     //recuperer les donnees de l'utilisateur stockees au chargement de la page
@@ -71,7 +72,8 @@ const App = () => {
             element: <AdminNavigation />,
             errorElement: <ErrorPage />,
             children: [
-                { index: true, element: <AccueilAdmin /> },
+                { index: true, element: <AdminUsers /> },
+                { path: "utilisateurs/:userId", element: <AdminAccount /> },
             ],
         },
         //toute route inconnue renvoie vers l'accueil selon le role

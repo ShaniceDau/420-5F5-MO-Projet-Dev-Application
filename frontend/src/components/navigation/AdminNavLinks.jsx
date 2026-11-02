@@ -9,10 +9,9 @@ const AdminNavLinks = () => {
     return (
         <ul className="nav-links">
             <li>
-                <NavLink to="/admin" end>Accueil</NavLink>
+                <NavLink to="/admin">Utilisateurs</NavLink>
             </li>
-        
-            <li>
+            <li className="nav-links_deconnexion">
                 <NavLink to="/admin/login" onClick={auth.logout}>Déconnexion</NavLink>
             </li>
         </ul>

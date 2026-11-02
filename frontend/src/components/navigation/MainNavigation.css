@@ -11,26 +11,6 @@
     overflow-y: auto;
 }
 
-
-.main-navigation__title::before,
-.sidebar_logo::before {
-    content: "";
-    flex-shrink: 0;
-    width: 14px;
-    height: 14px;
-    border-radius: 3px;
-    background: linear-gradient(135deg, var(--mauve-400), var(--rose-pale));
-}
-
-.main-navigation__title::before,
-.sidebar_logo::before {
-    content: "";
-    width: 14px;
-    height: 14px;
-    border-radius: 3px;
-    background: linear-gradient(135deg, var(--mauve-400), var(--rose-pale));
-}
-
 /* le bouton hamburger*/
 .main-navigation_MenuButton {
     display: none;

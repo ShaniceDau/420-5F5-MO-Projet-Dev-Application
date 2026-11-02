@@ -1,0 +1,175 @@
+.admin_compte {
+    max-width: 720px;
+}
+
+.admin_retour {
+    color: var(--mauve-700);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.admin_retour:hover {
+    text-decoration: underline;
+}
+
+.admin_compte_entete {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin: 16px 0 22px;
+}
+
+.admin_compte_entete h2 {
+    margin: 0;
+    font-size: 1.4rem;
+}
+
+.admin_compte_courriel {
+    margin: 4px 0 0;
+    color: var(--texte-doux);
+}
+
+.admin_section {
+    margin-bottom: 20px;
+    padding: 22px 24px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+}
+
+.admin_section h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+    font-size: 1rem;
+}
+
+.admin_section h3::before {
+    content: "";
+    width: 4px;
+    height: 16px;
+    border-radius: 2px;
+    background-color: var(--mauve-400);
+}
+
+/* consultation  */
+.admin_infos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+    margin: 0;
+}
+
+.admin_infos dt {
+    margin-bottom: 2px;
+    color: var(--texte-doux);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.admin_infos dd {
+    margin: 0;
+    word-break: break-word;
+}
+
+/* formulaire de modification */
+.admin_form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.admin_rangee {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.admin_control {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin_control label {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.admin_control input,
+.admin_control select {
+    padding: 10px 12px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+}
+
+.admin_control input:focus,
+.admin_control select:focus {
+    outline: none;
+    border-color: var(--mauve-500);
+    box-shadow: 0 0 0 3px var(--mauve-100);
+}
+
+.admin_aide {
+    margin: -6px 0 0;
+    color: var(--texte-doux);
+    font-size: 0.8rem;
+}
+
+/* messages */
+.admin_succes,
+.admin_erreur {
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: var(--rayon);
+    font-size: 0.85rem;
+}
+
+.admin_succes {
+    background-color: var(--succes-fond);
+    color: var(--succes);
+}
+
+.admin_erreur {
+    background-color: var(--erreur-fond);
+    color: var(--erreur);
+}
+
+/* boutons Annuler/Enregistrer */
+.admin_actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.admin_bouton_contour {
+    display: inline-block;
+    padding: 11px 22px;
+    background-color: var(--blanc);
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon);
+    color: var(--texte);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.admin_bouton_contour:hover {
+    background-color: var(--mauve-50);
+}
+
+/* sur cellulaire*/
+@media (max-width: 768px) {
+    .admin_infos,
+    .admin_rangee {
+        grid-template-columns: 1fr;
+    }
+
+    .admin_compte_entete {
+        flex-direction: column;
+    }
+}
