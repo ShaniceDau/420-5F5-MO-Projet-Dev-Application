@@ -1,4 +1,17 @@
 import Note from '../models/note.js';
+import Abonnement from '../models/abonnement.js';
+import { canCreateNote } from '../util/abonnement-limit.js';
+
+const resolveUserPlan = async (userId) => {
+    const abonnement = await Abonnement.findOne({ userId }).sort({ createdAt: -1 }).exec();
+
+    if (!abonnement) {
+        return 'gratuit';
+    }
+
+    const normalizedPlan = String(abonnement.type ?? 'gratuit').trim().toLowerCase();
+    return normalizedPlan === 'premium' ? 'premium' : 'gratuit';
+};
 
 const getNotes = async (req, res) => {
     try {
@@ -10,13 +23,29 @@ const getNotes = async (req, res) => {
 };
 
 const createNote = async (req, res) => {
-    const { title, content } = req.body;
+    const { title, content, userId } = req.body;
+
+    if (!title || !content || !userId) {
+        return res.status(400).json({
+            message: 'title, content and userId are required'
+        });
+    }
+
     try {
-        const note = new Note({ title, content });
+        const currentNotesCount = await Note.countDocuments({ userId });
+        const plan = await resolveUserPlan(userId);
+
+        if (!canCreateNote(plan, currentNotesCount)) {
+            return res.status(403).json({
+                message: 'Le forfait gratuit permet jusqu\'à 10 notes. Passez au plan premium pour débloquer un nombre illimité de notes.'
+            });
+        }
+
+        const note = new Note({ userId, title, content });
         await note.save();
-        res.status(201).json(note);
+        return res.status(201).json(note);
     } catch (error) {
-        res.status(500).json({ message: 'Error creating note', error });
+        return res.status(500).json({ message: 'Error creating note', error });
     }
 };
 const getNote = async (req, res) => {
