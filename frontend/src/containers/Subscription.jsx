@@ -1,14 +1,64 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { MESSAGE_SERVEUR } from "../api";
+import { chargerAbonnement, forfaitDe, revenirGratuit } from "../util/abonnements";
 import "./Subscription.css";
 
+//le forfait actuel vient du backend (/api/abonnements)
 export default function Abonnement() {
-    const [forfait, setForfait] = useState("gratuit");
+    const auth = useContext(AuthContext);
+
+    const [abonnement, setAbonnement] = useState(null);
+    const [chargement, setChargement] = useState(true);
+    const [erreur, setErreur] = useState("");
+
+    const forfait = forfaitDe(abonnement);
+
+    useEffect(() => {
+        let annule = false;
+        chargerAbonnement(auth.userId)
+            .then((a) => {
+                if (!annule) setAbonnement(a);
+            })
+            .catch((e) => {
+                if (!annule) setErreur(e.status ? "Impossible de charger votre abonnement." : MESSAGE_SERVEUR);
+            })
+            .finally(() => {
+                if (!annule) setChargement(false);
+            });
+        return () => {
+            annule = true;
+        };
+    }, [auth.userId]);
+
+    //annuler le premium : le compte repasse au forfait gratuit
+    const annulerPremium = async () => {
+        if (!window.confirm("Revenir au forfait gratuit ? Vous ne pourrez plus créer de note au-delà de 10.")) return;
+        setErreur("");
+        try {
+            setAbonnement(await revenirGratuit(abonnement));
+        } catch (e) {
+            setErreur(e.status ? "Le changement de forfait a échoué." : MESSAGE_SERVEUR);
+        }
+    };
+
+    if (chargement) {
+        return (
+            <div className="abonnement">
+                <h2>Abonnement</h2>
+                <p className="abonnement_utilisation">Chargement de votre abonnement...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="abonnement">
             <h2>Abonnement</h2>
-            <p className="abonnement_utilisation">Choisissez le forfait qui vous convient.</p>
+            <p className="abonnement_utilisation">
+                {forfait === "premium" ? "Vous avez le forfait Premium." : "Choisissez le forfait qui vous convient."}
+            </p>
+            {erreur && <p className="abonnement_erreur">{erreur}</p>}
 
             <div className="abonnement_forfaits">
                 {/* forfait gratuit */}
@@ -25,7 +75,7 @@ export default function Abonnement() {
                         <button
                             type="button"
                             className="forfait_bouton forfait_bouton_contour"
-                            onClick={() => setForfait("gratuit")}
+                            onClick={annulerPremium}
                         >
                             Revenir au gratuit
                         </button>

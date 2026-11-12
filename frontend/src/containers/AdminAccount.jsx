@@ -1,95 +1,124 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { appelApi, MESSAGE_SERVEUR } from "../api";
+import { activerPremium, chargerAbonnement, forfaitDe, revenirGratuit } from "../util/abonnements";
 import "./AdminUsers.css";
 import "./AdminAccount.css";
 
+//consulter et modifier le compte d'un utilisateur (/admin/utilisateurs/:email)
 export default function AdminCompte() {
-    const { userId } = useParams();
+    const { email } = useParams();
 
-    const [utilisateurs, setUtilisateurs] = useState(
-        JSON.parse(localStorage.getItem("utilisateurs")) || []
-    );
+    const [utilisateur, setUtilisateur] = useState(null);
+    const [abonnement, setAbonnement] = useState(null);
+    const [chargement, setChargement] = useState(true);
+    const [introuvable, setIntrouvable] = useState(false);
+    const [erreurChargement, setErreurChargement] = useState("");
+
     const [message, setMessage] = useState("");
     const [erreur, setErreur] = useState("");
 
-    const utilisateur = utilisateurs.find((u) => u.id === userId);
+    //GET /api/admins/users/:email + son abonnement
+    useEffect(() => {
+        let annule = false;
+        const charger = async () => {
+            try {
+                const user = await appelApi(`/admins/users/${encodeURIComponent(email)}`);
+                const abo = await chargerAbonnement(user._id);
+                if (annule) return;
+                setUtilisateur(user);
+                setAbonnement(abo);
+            } catch (e) {
+                if (annule) return;
+                if (e.status === 404) setIntrouvable(true);
+                else setErreurChargement(e.status ? "Impossible de charger ce compte." : MESSAGE_SERVEUR);
+            } finally {
+                if (!annule) setChargement(false);
+            }
+        };
+        charger();
+        return () => {
+            annule = true;
+        };
+    }, [email]);
 
-    if (!utilisateur) {
+    if (chargement || erreurChargement) {
         return (
             <div className="admin_compte">
-                <Link to="/admin/utilisateurs" className="admin_retour"> Utilisateurs</Link>
+                <Link to="/admin" className="admin_retour">← Utilisateurs</Link>
+                <p className={erreurChargement ? "admin_erreur" : "admin_aide"}>
+                    {erreurChargement || "Chargement du compte..."}
+                </p>
+            </div>
+        );
+    }
+
+    if (introuvable) {
+        return (
+            <div className="admin_compte">
+                <Link to="/admin" className="admin_retour">← Utilisateurs</Link>
                 <h2>Utilisateur introuvable</h2>
                 <p>Ce compte n'existe pas ou a été supprimé.</p>
             </div>
         );
     }
 
-    const notes = JSON.parse(localStorage.getItem("notes")) || [];
-    const nbNotes = notes.filter((n) => n.userId === userId).length;
-    const nbPartagees = notes.filter((n) => n.userId === userId && n.partageAvec && n.partageAvec.length > 0).length;
-    const premium = utilisateur.abonnement === "premium";
+    const forfait = forfaitDe(abonnement);
+    const premium = forfait === "premium";
 
     //valider et enregistrer les modifications du compte
-    const enregistrer = (event) => {
+    const enregistrer = async (event) => {
         event.preventDefault();
         setMessage("");
         setErreur("");
-        const data = Object.fromEntries(new FormData(event.target).entries());
-        const nouveauCourriel = data.courriel.trim();
-        const ancienCourriel = utilisateur.email;
+        const formulaire = event.target;
+        const data = Object.fromEntries(new FormData(formulaire).entries());
 
-        //le courriel ne doit pas deja etre utilise par un autre compte ou par l'admin
-        const dejaUtilise = utilisateurs.some((u) => u.email === nouveauCourriel && u.id !== userId);
-        if (dejaUtilise || nouveauCourriel === "admin@nota.com") {
-            setErreur("Ce courriel est déjà utilisé par un autre compte.");
+        if (!data.nom.trim()) {
+            setErreur("Le nom est requis.");
+            return;
+        }
+        //nouveau mot de passe : facultatif, mais les deux champs doivent etre pareils
+        if ((data.motdepasse || data.confirmer) && data.motdepasse !== data.confirmer) {
+            setErreur("Les deux mots de passe doivent être pareils.");
             return;
         }
 
-        //nouveau mot de passe les deux champs doivent etre pareils
-        if (data.motdepasse || data.confirmer) {
-            if (data.motdepasse !== data.confirmer) {
-                setErreur("Les deux mots de passe doivent être pareils.");
-                return;
+        try {
+            //nom (mot de passe si rempli) : PUT /api/users/:email
+            const changements = { name: data.nom.trim() };
+            if (data.motdepasse) changements.password = data.motdepasse;
+            const misAJour = await appelApi(`/users/${encodeURIComponent(utilisateur.email)}`, {
+                methode: "PUT",
+                corps: changements,
+            });
+            setUtilisateur({ ...utilisateur, name: misAJour.name });
+
+            //statut d'abonnement seulement s'il a change
+            if (data.abonnement !== forfait) {
+                const nouvelAbonnement =
+                    data.abonnement === "premium"
+                        ? await activerPremium(utilisateur._id)
+                        : await revenirGratuit(abonnement);
+                setAbonnement(nouvelAbonnement);
             }
+
+            formulaire.motdepasse.value = "";
+            formulaire.confirmer.value = "";
+            setMessage("Le compte a été modifié.");
+        } catch (e) {
+            setErreur(e.status ? "La modification a échoué." : MESSAGE_SERVEUR);
         }
-
-        const changements = {
-            prenom: data.prenom.trim(),
-            nom: data.nom.trim(),
-            email: nouveauCourriel,
-            abonnement: data.abonnement,
-        };
-        if (data.motdepasse) {
-            changements.password = data.motdepasse;
-        }
-
-        const misAJour = utilisateurs.map((u) => (u.id === userId ? { ...u, ...changements } : u));
-        localStorage.setItem("utilisateurs", JSON.stringify(misAJour));
-        setUtilisateurs(misAJour);
-
-        //si le courriel change, garder les notes qui lui etaient partagees
-        if (nouveauCourriel !== ancienCourriel) {
-            const notesMisesAJour = notes.map((note) =>
-                note.partageAvec
-                    ? { ...note, partageAvec: note.partageAvec.map((c) => (c === ancienCourriel ? nouveauCourriel : c)) }
-                    : note
-            );
-            localStorage.setItem("notes", JSON.stringify(notesMisesAJour));
-        }
-
-        event.target.motdepasse.value = "";
-        event.target.confirmer.value = "";
-        setMessage("Le compte a été modifié.");
     };
 
     return (
         <div className="admin_compte">
-            <Link to="/admin/utilisateurs" className="admin_retour">Utilisateurs</Link>
+            <Link to="/admin" className="admin_retour">Utilisateurs</Link>
 
             {/* en-tete : nom et statut */}
             <div className="admin_compte_entete">
                 <div>
-                    <h2>{`${utilisateur.prenom || ""} ${utilisateur.nom || ""}`.trim() || utilisateur.email}</h2>
+                    <h2>{utilisateur.name || utilisateur.email}</h2>
                     <p className="admin_compte_courriel">{utilisateur.email}</p>
                 </div>
                 <span className={`admin_statut ${premium ? "admin_statut_premium" : ""}`}>
@@ -103,32 +132,30 @@ export default function AdminCompte() {
                 <dl className="admin_infos">
                     <div>
                         <dt>Identifiant</dt>
-                        <dd>{utilisateur.id}</dd>
-                    </div>
-                    <div>
-                        <dt>Prénom</dt>
-                        <dd>{utilisateur.prenom || "—"}</dd>
+                        <dd>{utilisateur._id}</dd>
                     </div>
                     <div>
                         <dt>Nom</dt>
-                        <dd>{utilisateur.nom || "—"}</dd>
+                        <dd>{utilisateur.name || "—"}</dd>
                     </div>
                     <div>
                         <dt>Courriel</dt>
                         <dd>{utilisateur.email}</dd>
                     </div>
                     <div>
+                        <dt>Inscrit le</dt>
+                        <dd>{new Date(utilisateur.createdAt).toLocaleDateString("fr-CA")}</dd>
+                    </div>
+                    <div>
                         <dt>Abonnement</dt>
                         <dd>{premium ? "Premium (notes illimitées)" : "Gratuit (10 notes maximum)"}</dd>
                     </div>
-                    <div>
-                        <dt>Notes</dt>
-                        <dd>
-                            {nbNotes} note{nbNotes > 1 ? "s" : ""}
-                            {!premium && ` sur 10`}
-                            {nbPartagees > 0 && ` · ${nbPartagees} partagée${nbPartagees > 1 ? "s" : ""}`}
-                        </dd>
-                    </div>
+                    {premium && abonnement && (
+                        <div>
+                            <dt>Premium jusqu'au</dt>
+                            <dd>{new Date(abonnement.endDate).toLocaleDateString("fr-CA")}</dd>
+                        </div>
+                    )}
                 </dl>
             </section>
 
@@ -138,28 +165,26 @@ export default function AdminCompte() {
                 <form
                     className="admin_form"
                     onSubmit={enregistrer}
-                    onChange={() => { setMessage(""); setErreur(""); }}
-                    key={utilisateur.id}
+                    onChange={() => {
+                        setMessage("");
+                        setErreur("");
+                    }}
+                    key={`${utilisateur._id}-${forfait}`}
                 >
-                    <div className="admin_rangee">
-                        <div className="admin_control">
-                            <label htmlFor="prenom">Prénom</label>
-                            <input id="prenom" name="prenom" type="text" defaultValue={utilisateur.prenom} />
-                        </div>
-                        <div className="admin_control">
-                            <label htmlFor="nom">Nom</label>
-                            <input id="nom" name="nom" type="text" defaultValue={utilisateur.nom} />
-                        </div>
+                    <div className="admin_control">
+                        <label htmlFor="nom">Nom</label>
+                        <input id="nom" name="nom" type="text" defaultValue={utilisateur.name} required />
                     </div>
 
                     <div className="admin_control">
                         <label htmlFor="courriel">Courriel</label>
-                        <input id="courriel" name="courriel" type="email" defaultValue={utilisateur.email} required />
+                        <input id="courriel" type="email" value={utilisateur.email} disabled />
+                        <span className="admin_aide">Le courriel ne peut pas être modifié pour l'instant.</span>
                     </div>
 
                     <div className="admin_control">
                         <label htmlFor="abonnement">Statut d'abonnement</label>
-                        <select id="abonnement" name="abonnement" defaultValue={premium ? "premium" : "gratuit"}>
+                        <select id="abonnement" name="abonnement" defaultValue={forfait}>
                             <option value="gratuit">Gratuit (10 notes maximum)</option>
                             <option value="premium">Premium (notes illimitées)</option>
                         </select>
@@ -181,7 +206,7 @@ export default function AdminCompte() {
                     {message && <p className="admin_succes">{message}</p>}
 
                     <div className="admin_actions">
-                        <Link to="/admin/utilisateurs" className="admin_bouton_contour">Annuler</Link>
+                        <Link to="/admin" className="admin_bouton_contour">Annuler</Link>
                         <button type="submit" className="admin_bouton">Enregistrer les modifications</button>
                     </div>
                 </form>

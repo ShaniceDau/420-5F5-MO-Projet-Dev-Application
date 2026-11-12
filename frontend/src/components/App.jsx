@@ -73,7 +73,7 @@ const App = () => {
             errorElement: <ErrorPage />,
             children: [
                 { index: true, element: <AdminUsers /> },
-                { path: "utilisateurs/:userId", element: <AdminAccount /> },
+                { path: "utilisateurs/:email", element: <AdminAccount /> },
             ],
         },
         //toute route inconnue renvoie vers l'accueil selon le role

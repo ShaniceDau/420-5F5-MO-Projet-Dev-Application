@@ -3,13 +3,21 @@
 }
 
 .paiement_retour {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--mauve-300);
+    border-radius: var(--rayon);
+    background-color: var(--blanc);
     color: var(--mauve-700);
+    font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
+    transition: background-color 0.15s, border-color 0.15s;
 }
 
 .paiement_retour:hover {
-    text-decoration: underline;
+    background-color: var(--mauve-50);
+    border-color: var(--mauve-500);
 }
 
 .paiement h2 {

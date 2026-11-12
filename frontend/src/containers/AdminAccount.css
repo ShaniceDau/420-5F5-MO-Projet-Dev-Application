@@ -3,13 +3,21 @@
 }
 
 .admin_retour {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--mauve-300);
+    border-radius: var(--rayon);
+    background-color: var(--blanc);
     color: var(--mauve-700);
+    font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
+    transition: background-color 0.15s, border-color 0.15s;
 }
 
 .admin_retour:hover {
-    text-decoration: underline;
+    background-color: var(--mauve-50);
+    border-color: var(--mauve-500);
 }
 
 .admin_compte_entete {
@@ -172,4 +180,26 @@
     .admin_compte_entete {
         flex-direction: column;
     }
+}
+
+/* champ courriel pas modifiable */
+.admin_control input:disabled {
+    background-color: var(--mauve-50);
+    color: var(--texte-doux);
+}
+
+/* bouton mauve Enregistrer les modifications */
+.admin_bouton {
+    padding: 11px 22px;
+    background-color: var(--mauve-700);
+    color: var(--blanc);
+    border: none;
+    border-radius: var(--rayon);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.admin_bouton:hover {
+    background-color: var(--mauve-800);
 }

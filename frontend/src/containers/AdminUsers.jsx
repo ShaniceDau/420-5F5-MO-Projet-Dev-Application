@@ -1,17 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { appelApi, MESSAGE_SERVEUR } from "../api";
+import { dernierAbonnement, forfaitDe } from "../util/abonnements";
 import "./AdminUsers.css";
 
+//liste des utilisateurs et recherche par nom ou courriel
 export default function AdminUsers() {
     const [recherche, setRecherche] = useState("");
+    const [utilisateurs, setUtilisateurs] = useState([]);
+    const [chargement, setChargement] = useState(true);
+    const [erreur, setErreur] = useState("");
 
-    const utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-    const notes = JSON.parse(localStorage.getItem("notes")) || [];
+    //GET /api/admins/users (sans les mots de passe) et GET /api/admins/abonnements
+    useEffect(() => {
+        let annule = false;
+        const charger = async () => {
+            try {
+                const users = await appelApi("/admins/users");
+                const abonnements = await appelApi("/admins/abonnements");
+                if (annule) return;
+                setUtilisateurs(
+                    users.map((u) => ({
+                        id: u._id,
+                        nom: u.name,
+                        email: u.email,
+                        forfait: forfaitDe(dernierAbonnement(abonnements, u._id)),
+                    }))
+                );
+            } catch (e) {
+                if (!annule) setErreur(e.status ? "Impossible de charger les utilisateurs." : MESSAGE_SERVEUR);
+            } finally {
+                if (!annule) setChargement(false);
+            }
+        };
+        charger();
+        return () => {
+            annule = true;
+        };
+    }, []);
 
+    //garder les utilisateurs dont le nom ou le courriel contient le texte recherche
     const texte = recherche.trim().toLowerCase();
-    const resultats = utilisateurs.filter((u) =>
-        `${u.prenom || ""} ${u.nom || ""} ${u.email}`.toLowerCase().includes(texte)
-    );
+    const resultats = utilisateurs.filter((u) => `${u.nom} ${u.email}`.toLowerCase().includes(texte));
 
     return (
         <div className="admin_utilisateurs">
@@ -29,48 +59,53 @@ export default function AdminUsers() {
                 autoFocus
             />
 
-            <p className="admin_nb_resultats">
-                {resultats.length} utilisateur{resultats.length > 1 ? "s" : ""}
-                {texte && ` trouvé${resultats.length > 1 ? "s" : ""}`}
-            </p>
-
-            {resultats.length === 0 ? (
-                <p className="admin_aucun">Aucun utilisateur n'a été trouvé.</p>
+            {chargement || erreur ? (
+                <p className="admin_aucun">{erreur || "Chargement des utilisateurs..."}</p>
             ) : (
-                <div className="admin_tableau_conteneur">
-                    <table className="admin_tableau">
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Courriel</th>
-                                <th>Abonnement</th>
-                                <th>Notes</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {resultats.map((u) => {
-                                const nbNotes = notes.filter((n) => n.userId === u.id).length;
-                                const premium = u.abonnement === "premium";
-                                return (
-                                    <tr key={u.id}>
-                                        <td>{`${u.prenom || ""} ${u.nom || ""}`.trim() || "—"}</td>
-                                        <td>{u.email}</td>
-                                        <td>
-                                            <span className={`admin_statut ${premium ? "admin_statut_premium" : ""}`}>
-                                                {premium ? "Premium" : "Gratuit"}
-                                            </span>
-                                        </td>
-                                        <td>{nbNotes}</td>
-                                        <td className="admin_tableau_action">
-                                            <Link to={`/admin/utilisateurs/${u.id}`}>Voir le compte</Link>
-                                        </td>
+                <>
+                    <p className="admin_nb_resultats">
+                        {resultats.length} utilisateur{resultats.length > 1 ? "s" : ""}
+                        {texte && ` trouvé${resultats.length > 1 ? "s" : ""}`}
+                    </p>
+
+                    {resultats.length === 0 ? (
+                        <p className="admin_aucun">Aucun utilisateur n'a été trouvé.</p>
+                    ) : (
+                        <div className="admin_tableau_conteneur">
+                            <table className="admin_tableau">
+                                <thead>
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Courriel</th>
+                                        <th>Abonnement</th>
+                                        <th></th>
                                     </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
+                                </thead>
+                                <tbody>
+                                    {resultats.map((u) => {
+                                        const premium = u.forfait === "premium";
+                                        return (
+                                            <tr key={u.id}>
+                                                <td>{u.nom || "—"}</td>
+                                                <td>{u.email}</td>
+                                                <td>
+                                                    <span className={`admin_statut ${premium ? "admin_statut_premium" : ""}`}>
+                                                        {premium ? "Premium" : "Gratuit"}
+                                                    </span>
+                                                </td>
+                                                <td className="admin_tableau_action">
+                                                    <Link to={`/admin/utilisateurs/${encodeURIComponent(u.email)}`}>
+                                                        Voir le compte
+                                                    </Link>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </>
             )}
         </div>
     );

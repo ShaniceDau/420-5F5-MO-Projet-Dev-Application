@@ -1,11 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import "./Paiement.css"
+import { AuthContext } from "../context/AuthContext";
+import { MESSAGE_SERVEUR } from "../api";
+import { activerPremium } from "../util/abonnements";
+import "./Paiement.css";
 
 export default function Paiement() {
+    const auth = useContext(AuthContext);
     const [numeroCarte, setNumeroCarte] = useState("");
     const [expiration, setExpiration] = useState("");
     const [paye, setPaye] = useState(false);
+    const [envoi, setEnvoi] = useState(false);
+    const [erreur, setErreur] = useState("");
 
     //chiffre de carte credit
     const changerNumero = (event) => {
@@ -19,10 +25,20 @@ export default function Paiement() {
         setExpiration(chiffres.length > 2 ? chiffres.slice(0, 2) + "/" + chiffres.slice(2) : chiffres);
     };
 
-    const payer = (event) => {
+    const payer = async (event) => {
         event.preventDefault();
-        //envoyer la demande de paiement au backend ici
-        setPaye(true);
+        setErreur("");
+        setEnvoi(true);
+        try {
+            //aucun vrai paiement on active l'abonnement premium dans le backend (POST /api/abonnements)
+            //les donnees de la carte ne sont envoyees nulle part
+            await activerPremium(auth.userId);
+            setPaye(true);
+        } catch (e) {
+            setErreur(e.status ? "Le paiement a échoué. Votre abonnement n'a pas été activé." : MESSAGE_SERVEUR);
+        } finally {
+            setEnvoi(false);
+        }
     };
 
     //ecran de confirmation
@@ -38,7 +54,7 @@ export default function Paiement() {
 
     return (
         <div className="paiement">
-            <Link to="/abonnement" className="paiement_retour">Abonnement</Link>
+            <Link to="/abonnement" className="bouton_retour">Abonnement</Link>
             <h2>Paiement</h2>
 
             <div className="paiement_contenu">
@@ -114,7 +130,11 @@ export default function Paiement() {
                         </div>
                     </div>
 
-                    <button type="submit" className="paiement_bouton">Payer 4,99 $</button>
+                    {erreur && <p className="paiement_erreur">{erreur}</p>}
+
+                    <button type="submit" className="paiement_bouton" disabled={envoi}>
+                        {envoi ? "Paiement en cours..." : "Payer 4,99 $"}
+                    </button>
                 </form>
             </div>
         </div>

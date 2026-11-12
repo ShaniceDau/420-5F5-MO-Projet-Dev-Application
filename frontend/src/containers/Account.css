@@ -146,3 +146,10 @@
         align-items: flex-start;
     }
 }
+
+/* champ courriel pas modifiable */
+.compte_control input:disabled {
+    background-color: var(--mauve-50);
+    color: var(--texte-doux);
+    border-color: var(--bordure);
+}

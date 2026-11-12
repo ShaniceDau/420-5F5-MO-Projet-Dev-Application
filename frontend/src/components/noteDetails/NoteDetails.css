@@ -22,13 +22,21 @@
 }
 
 .note_editeur_retour {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid var(--mauve-300);
+    border-radius: var(--rayon);
+    background-color: var(--blanc);
     color: var(--mauve-700);
+    font-size: 0.85rem;
     font-weight: 600;
     text-decoration: none;
+    transition: background-color 0.15s, border-color 0.15s;
 }
 
 .note_editeur_retour:hover {
-    text-decoration: underline;
+    background-color: var(--mauve-50);
+    border-color: var(--mauve-500);
 }
 
 .note_editeur_statut {
@@ -189,4 +197,20 @@
     .note_partage_form {
         flex-direction: column;
     }
+}
+
+/* message quand le forfait gratuit est plein (10 notes) */
+.note_editeur_limite {
+    margin: 0;
+    padding: 10px 14px;
+    background-color: var(--erreur-fond);
+    border: 1px solid var(--erreur);
+    border-radius: var(--rayon);
+    color: var(--erreur);
+    font-size: 0.9rem;
+}
+
+.note_editeur_limite a {
+    color: var(--erreur);
+    font-weight: 700;
 }

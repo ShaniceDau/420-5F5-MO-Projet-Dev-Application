@@ -39,7 +39,7 @@ export default function LoginForm({ admin = false }) {
         }
         if (!valid) return;
 
-        const identifiants = { email: data.email, password: data.password };
+        const identifiants = { email: data.email.trim().toLowerCase(), password: data.password };
 
         try {
             if (admin) {

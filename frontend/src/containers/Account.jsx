@@ -1,83 +1,116 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { appelApi, MESSAGE_SERVEUR } from "../api";
+import { chargerAbonnement, forfaitDe } from "../util/abonnements";
 import "./Account.css";
 
 export default function Compte() {
     const auth = useContext(AuthContext);
 
-    const utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-    const utilisateur = utilisateurs.find((u) => u.id === auth.userId) || {};
+    const [nom, setNom] = useState("");
+    const [forfait, setForfait] = useState("gratuit");
+    const [chargement, setChargement] = useState(true);
+    const [erreurChargement, setErreurChargement] = useState("");
 
     const [messageInfos, setMessageInfos] = useState("");
     const [erreurInfos, setErreurInfos] = useState("");
     const [messageMdp, setMessageMdp] = useState("");
     const [erreurMdp, setErreurMdp] = useState("");
 
-    //modifier un utilisateur dans le localStorage
-    const modifierUtilisateur = (changements) => {
-        const tous = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-        const misAJour = tous.map((u) => (u.id === auth.userId ? { ...u, ...changements } : u));
-        localStorage.setItem("utilisateurs", JSON.stringify(misAJour));
-    };
-
-    //enregistrer prenom, nom et courriel
-    const enregistrerInfos = (event) => {
-        event.preventDefault();
-        setErreurInfos("");
-        const data = Object.fromEntries(new FormData(event.target).entries());
-        const nouveauCourriel = data.courriel.trim();
-        const ancienCourriel = auth.email;
-
-        if (nouveauCourriel !== ancienCourriel) {
-            //le courriel ne doit pas deja etre utilise
-            const tous = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-            const dejaUtilise = tous.some((u) => u.email === nouveauCourriel && u.id !== auth.userId);
-            if (dejaUtilise || nouveauCourriel === "admin@nota.com") {
-                setErreurInfos("Ce courriel est déjà utilisé.");
-                return;
+    //charger le compte (GET /api/users/:email) et l'abonnement
+    useEffect(() => {
+        let annule = false;
+        const charger = async () => {
+            try {
+                const utilisateur = await appelApi(`/users/${encodeURIComponent(auth.email)}`);
+                const abonnement = await chargerAbonnement(auth.userId);
+                if (annule) return;
+                setNom(utilisateur.name);
+                setForfait(forfaitDe(abonnement));
+            } catch (e) {
+                if (!annule) setErreurChargement(e.status ? "Impossible de charger votre compte." : MESSAGE_SERVEUR);
+            } finally {
+                if (!annule) setChargement(false);
             }
+        };
+        charger();
+        return () => {
+            annule = true;
+        };
+    }, [auth.email, auth.userId]);
 
-            //garder les notes partagees avec l'ancien courriel
-            const notes = JSON.parse(localStorage.getItem("notes")) || [];
-            const notesMisesAJour = notes.map((note) =>
-                note.partageAvec
-                    ? { ...note, partageAvec: note.partageAvec.map((c) => (c === ancienCourriel ? nouveauCourriel : c)) }
-                    : note
-            );
-            localStorage.setItem("notes", JSON.stringify(notesMisesAJour));
+    //enregistrer le nom (PUT /api/users/:email)
+    const enregistrerInfos = async (event) => {
+        event.preventDefault();
+        setMessageInfos("");
+        setErreurInfos("");
+
+        if (!nom.trim()) {
+            setErreurInfos("Le nom est requis.");
+            return;
         }
 
-        modifierUtilisateur({ prenom: data.prenom, nom: data.nom, email: nouveauCourriel });
-
-        //mettre a jour le courriel de la session en cours
-        if (nouveauCourriel !== ancienCourriel) {
-            auth.login(auth.userId, nouveauCourriel, auth.role);
+        try {
+            await appelApi(`/users/${encodeURIComponent(auth.email)}`, {
+                methode: "PUT",
+                corps: { name: nom.trim() },
+            });
+            setMessageInfos("Vos informations ont été enregistrées.");
+        } catch (e) {
+            setErreurInfos(e.status ? "L'enregistrement a échoué." : MESSAGE_SERVEUR);
         }
-
-        setMessageInfos("Vos informations ont été enregistrées.");
     };
 
     //changer le mot de passe
-    const changerMotDePasse = (event) => {
+    const changerMotDePasse = async (event) => {
         event.preventDefault();
         setErreurMdp("");
         setMessageMdp("");
-        const data = Object.fromEntries(new FormData(event.target).entries());
+        const formulaire = event.target;
+        const data = Object.fromEntries(new FormData(formulaire).entries());
 
-        if (data.actuel !== utilisateur.password) {
-            setErreurMdp("Le mot de passe actuel est incorrect.");
-            return;
-        }
         if (data.nouveau !== data.confirmer) {
             setErreurMdp("Les nouveaux mots de passe doivent être pareils.");
             return;
         }
 
-        modifierUtilisateur({ password: data.nouveau });
-        setMessageMdp("Votre mot de passe a été changé.");
-        event.target.reset();
+        try {
+            //verifier le mot de passe actuel avec la route de connexion (401 = incorrect)
+            try {
+                await appelApi("/users/login", {
+                    methode: "POST",
+                    corps: { email: auth.email, password: data.actuel },
+                });
+            } catch (e) {
+                if (e.status === 401) {
+                    setErreurMdp("Le mot de passe actuel est incorrect.");
+                    return;
+                }
+                throw e;
+            }
+
+            await appelApi(`/users/${encodeURIComponent(auth.email)}`, {
+                methode: "PUT",
+                corps: { password: data.nouveau },
+            });
+            setMessageMdp("Votre mot de passe a été changé.");
+            formulaire.reset();
+        } catch (e) {
+            setErreurMdp(e.status ? "Le changement de mot de passe a échoué." : MESSAGE_SERVEUR);
+        }
     };
+
+    if (chargement || erreurChargement) {
+        return (
+            <div className="compte">
+                <h2>Mon compte</h2>
+                <p className={erreurChargement ? "compte_erreur" : "compte_aide"}>
+                    {erreurChargement || "Chargement de votre compte..."}
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="compte">
@@ -89,21 +122,26 @@ export default function Compte() {
                 <form
                     className="compte_form"
                     onSubmit={enregistrerInfos}
-                    onChange={() => { setMessageInfos(""); setErreurInfos(""); }}
+                    onChange={() => {
+                        setMessageInfos("");
+                        setErreurInfos("");
+                    }}
                 >
-                    <div className="compte_rangee">
-                        <div className="compte_control">
-                            <label htmlFor="prenom">Prénom</label>
-                            <input id="prenom" name="prenom" type="text" defaultValue={utilisateur.prenom} />
-                        </div>
-                        <div className="compte_control">
-                            <label htmlFor="nom">Nom</label>
-                            <input id="nom" name="nom" type="text" defaultValue={utilisateur.nom} />
-                        </div>
+                    <div className="compte_control">
+                        <label htmlFor="nom">Nom</label>
+                        <input
+                            id="nom"
+                            name="nom"
+                            type="text"
+                            value={nom}
+                            onChange={(event) => setNom(event.target.value)}
+                            required
+                        />
                     </div>
                     <div className="compte_control">
                         <label htmlFor="courriel">Courriel</label>
-                        <input id="courriel" name="courriel" type="email" defaultValue={auth.email} required />
+                        <input id="courriel" type="email" value={auth.email || ""} disabled />
+                        <span className="compte_aide">Le courriel sert à la connexion et ne peut pas être modifié.</span>
                     </div>
                     {erreurInfos && <p className="compte_erreur">{erreurInfos}</p>}
                     {messageInfos && <p className="compte_succes">{messageInfos}</p>}
@@ -140,8 +178,8 @@ export default function Compte() {
                 <h3>Abonnement</h3>
                 <div className="compte_abonnement">
                     <div>
-                        <p className="compte_forfait">Forfait Gratuit</p>
-                        <p className="compte_aide">Jusqu'à 10 notes</p>
+                        <p className="compte_forfait">{forfait === "premium" ? "Forfait Premium" : "Forfait Gratuit"}</p>
+                        <p className="compte_aide">{forfait === "premium" ? "Notes illimitées" : "Jusqu'à 10 notes"}</p>
                     </div>
                     <Link to="/abonnement" className="compte_bouton compte_bouton_contour">
                         Gérer mon abonnement

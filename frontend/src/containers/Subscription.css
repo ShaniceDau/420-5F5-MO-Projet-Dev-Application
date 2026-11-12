@@ -117,3 +117,13 @@
 .forfait_bouton_contour:hover {
     background-color: var(--mauve-50);
 }
+
+.abonnement_erreur {
+    max-width: 720px;
+    margin: 0 0 20px;
+    padding: 8px 12px;
+    background-color: var(--erreur-fond);
+    border-radius: var(--rayon);
+    color: var(--erreur);
+    font-size: 0.85rem;
+}

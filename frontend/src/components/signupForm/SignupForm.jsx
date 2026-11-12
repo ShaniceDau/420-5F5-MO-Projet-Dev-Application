@@ -31,7 +31,7 @@ export default function Signup() {
             //POST /api/users/register
             await appelApi("/users/register", {
                 methode: "POST",
-                corps: { name, email: data.courriel, password: data.password },
+                corps: { name, email: data.courriel.trim().toLowerCase(), password: data.password },
             });
 
             //Rediriger vers la page de connexion après l'inscription
